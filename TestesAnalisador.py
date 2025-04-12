@@ -108,19 +108,19 @@ def column_stats(data):
             print("Entrada inválida. Digite um número.")
     
     # Calcular e mostrar estatísticas
-col_data = data[col_name]
+# col_data = data[col_name]
     
-print(f"\nEstatísticas para '{col_name}':")
-print(f"Média: {col_data.mean():.2f}")
-print(f"Mediana: {col_data.median():.2f}")
+# print(f"\nEstatísticas para '{col_name}':")
+# print(f"Média: {col_data.mean():.2f}")
+# print(f"Mediana: {col_data.median():.2f}")
     
-try:
-    mode = statistics.mode(col_data)
-    print(f"Moda: {mode:.2f}")
-except statistics.StatisticsError:
-    print("Moda: Não há uma moda única")
+# try:
+#     mode = statistics.mode(col_data)
+#     print(f"Moda: {mode:.2f}")
+# except statistics.StatisticsError:
+#     print("Moda: Não há uma moda única")
     
-    print(f"Desvio Padrão: {col_data.std():.2f}")
+#     print(f"Desvio Padrão: {col_data.std():.2f}")
 
 def generate_plots(data):
     """Gera os gráficos especificados"""
