@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 print("\n---- ANALISADOR DE DADOS ----")
 print("\n*** [Carregando arquivo] ***")
-# Primeiro Processo Geral: Carregar um arquivo CSV
+""" Primeiro Processo Geral: Carregar um arquivo CSV """
 
 # Carregar arquivo através do caminho do mesmo
 caminhoArquivo = input("Escreva o caminho do arquivo para leitura: \n")
@@ -18,17 +18,43 @@ filtroFeminino = arquivo[arquivo["Gender"]=="Female"]
 quantidadeHomens = len(filtroMasculino)
 quantidadeMulheres = len(filtroFeminino)
 
+# Contar número de campos vazios da coluna 'Nível de educação dos pais(Parent_Education_Level)'
 filtroPais = arquivo[arquivo["Parent_Education_Level"].isna()]
 educacao_pais_vazio = len(filtroPais)
 
+# Resumo estatísco 
 print("\nRESUMO ESTATÍSCO DOS DADOS: ")
-print(f"Registros carregados: {num_dados}.")
-print(f"Quantidade de homens: {quantidadeHomens}.")
-print(f"Quantidade de mulheres: {quantidadeMulheres}.")
-print(f"Quantidade de registros com o campo 'Nível de educação dos pais' vazio: {educacao_pais_vazio}.\n")
+print(f"- Registros carregados: {num_dados}.")
+print(f"- Quantidade de homens: {quantidadeHomens}.")
+print(f"- Quantidade de mulheres: {quantidadeMulheres}.")
+print(f"- Quantidade de registros com o campo 'Nível de educação dos pais' vazio: {educacao_pais_vazio}.")
 
 print("\n*** [Limpeza de Dados] ***")
-# arquivo2 = arquivo.dropna(subset=["Parent_Education_Level"])
+""" Segundo processo geral: Limpeza de dados do arquivo carregado """
+
+# Remoção dos registros que estão com o campo 'Nível de educação dos pais' vazio
+novo_arquivo = arquivo.dropna(subset=['Parent_Education_Level']) 
+print("\nATENÇÃO: Registros com o campo 'Nível de educação dos pais' vazios, foram removidos!")
+# print(novo_arquivo['Parent_Education_Level']) 
+
+# Alteração de dados da coluna 'Presença(Attendance)' que estão nulos para a mediana
+
+# Ordenar de forma crescente os valores da coluna 'Attendance' 
+# ATENÇÂO: no método '.sort_values' valores nulos são colocados ao fim do DataFrame
+print("\nATENÇÂO: Coluna Attendance ordenada de forma crescente!")
+novo_arquivo_ordenado = novo_arquivo.sort_values(['Attendance (%)'])
+attendance = novo_arquivo_ordenado['Attendance (%)']
+print(attendance)
+
+# Mediana dos valores não nulos da coluna 'Attendance'
+mediana_col_attendance = novo_arquivo['Attendance (%)'].median()
+print(f"\n- Mediana da coluna Attendance: {mediana_col_attendance} %.")
+
+# Alteração de dados de presença (Attendance) que estão nulos para a mediana
+novo_arquivo['Attendance (%)'] = novo_arquivo['Attendance (%)'].fillna(mediana_col_attendance)
+print("\n- Valores nulos preenchidos com a mediana:")
+print(novo_arquivo['Attendance (%)'])
+
 print("\n*** [Consulta a Dados] ***")
 
 print("\n*** [Gráficos] ***")
