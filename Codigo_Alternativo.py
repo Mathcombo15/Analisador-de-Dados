@@ -1,8 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
-
 print("\n---- ANALISADOR DE DADOS ----")
 print("\n*** [Carregando arquivo] ***")
 """ Primeiro Processo Geral: Carregar um arquivo CSV """
@@ -41,7 +39,7 @@ print("\nATENÇÃO: Registros com o campo 'Nível de educação dos pais' vazios
 
 # Ordenar de forma crescente os valores da coluna 'Attendance' 
 # ATENÇÂO: no método '.sort_values' valores nulos são colocados ao fim do DataFrame
-print("\nATENÇÂO: Coluna Attendance ordenada de forma crescente!")
+print("\n- Coluna Attendance ordenada de forma crescente:")
 novo_arquivo_ordenado = novo_arquivo.sort_values(['Attendance (%)'])
 attendance = novo_arquivo_ordenado['Attendance (%)']
 print(attendance)
@@ -55,54 +53,71 @@ novo_arquivo['Attendance (%)'] = novo_arquivo['Attendance (%)'].fillna(mediana_c
 print("\n- Valores nulos preenchidos com a mediana:")
 print(novo_arquivo['Attendance (%)'])
 
+# Somatório dos valores da coluna 'Attendance'
+soma_attendance = novo_arquivo['Attendance (%)'].sum()
+print(f"\nSomatório da coluna Attendance: {soma_attendance}")
+
 print("\n*** [Consulta a Dados] ***")
+""" Terceiro processo geral: Limpeza de dados do arquivo carregado """
+
+# Apresentação de colunas para realização de cálculo posterior
+arquivoNumerico = arquivo.select_dtypes(include=["number"])
+listaColunas = arquivoNumerico.columns.tolist()
+for i, coluna in enumerate(listaColunas): 
+    numeroColuna = i+1
+    print(f"{numeroColuna} - {coluna}")
+colunaEscolhida = input("\nEscolha a coluna que deseja calcular (escreva o número): ")
+colunaCalculo = listaColunas[int(colunaEscolhida) -1]
+
+# Cálculo da 'Média', 'Mediana', 'Moda', e 'Desvio Padrão' da coluna escolhida pelo usuário
+valoresACalcular = arquivoNumerico[colunaCalculo].tolist()
+serie = pd.Series(valoresACalcular)
+media = serie.mean()
+mediana = serie.median()
+moda = serie.mode().iloc[0]
+desvioPadrao = serie.std()
+print(f"- Média: {media}")
+print(f"- Mediana: {mediana}")
+print(f"- Moda: {moda}")
+print(f"- Desvio padrão: {desvioPadrao}")
 
 print("\n*** [Gráficos] ***")
+""" Quarto processo geral: Visualização de gráficos gerados a partir das colunas abaixo """
 
-# arquivoNumerico = arquivo.select_dtypes(include=["number"])
-# listaColunas = arquivoNumerico.columns.tolist()
-# for i, coluna in enumerate(listaColunas): 
-#     numeroColuna = i+1
-#     print(f"{numeroColuna} - {coluna}")
-# colunaEscolhida = input("\nEscolha a coluna que deseja calcular (escreva o número): ")
-# colunaCalculo = listaColunas[int(colunaEscolhida) -1]
+# Gráfico de dispersão para “horas de sono” x “nota final”
+plt.scatter(arquivoNumerico["Sleep_Hours_per_Night"], arquivoNumerico["Final_Score"])
+plt.title("Gráfico de Dispersão - Horas de sono x Nota final")
+plt.xlabel("Horas de Sono")
+plt.ylabel("Nota Final")
+plt.show()
 
-# valoresACalcular = arquivoNumerico[colunaCalculo].tolist()
-# serie = pd.Series(valoresACalcular)
-# media = serie.mean()
-# mediana = serie.median()
-# moda = serie.mode().iloc[0]
-# desvioPadrao = serie.std()
-# print(f"Média: {media}")
-# print(f"Mediana: {mediana}")
-# print(f"Moda: {moda}")
-# print(f"Desvio padrão: {desvioPadrao}")
+# Gráfico de barras para – idade x média das notas intermediárias (midterm_Score)
+plt.bar(arquivoNumerico["Age"], arquivoNumerico["Midterm_Score"])
+plt.title("Gráfico de Barras - Idade x Média das Notas Intermediárias")
+plt.xlabel("Idade")
+plt.ylabel("Idade x Média das Notas Intermediárias")
+plt.show()
 
-# plt.scatter(arquivoNumerico["Sleep_Hours_per_Night"], arquivoNumerico["Final_Score"])
-# plt.title("Gráfico de Dispersão - Horas de sono x Nota final")
-# plt.xlabel("Horas de Sono")
-# plt.ylabel("Nota Final")
-# plt.show()
+# Gráfico de pizza para as idades (Agrupadas: até 17; 18 a 21; 21 a 24; 25 ou mais)
 
-# plt.bar(arquivoNumerico["Age"], arquivoNumerico["Midterm_Score"])
-# plt.title("Gráfico de Barras - Idade x Média das Notas Intermediárias")
-# plt.xlabel("Idade")
-# plt.ylabel("Idade x Média das Notas Intermediárias")
-# plt.show()
+# Agrupamento 1: até 17 anos
+filtro1 = arquivoNumerico[arquivoNumerico["Age"]<=17]
+faixaEtaria1 = len(filtro1)
 
-# filtro1 = arquivoNumerico[arquivoNumerico["Age"]<=17]
-# faixaEtaria1 = len(filtro1)
+# Agrupamento 2: de 18 a 21 anos
+filtro2 = arquivoNumerico[(arquivoNumerico["Age"]> 17) &(arquivo["Age"]<=21)]
+faixaEtaria2 = len(filtro2)
 
-# filtro2 = arquivoNumerico[(arquivoNumerico["Age"]> 17) &(arquivo["Age"]<=21)]
-# faixaEtaria2 = len(filtro2)
+# Agrupamento 3: de 21 a 24 anos
+filtro3 = arquivoNumerico[(arquivoNumerico["Age"]> 21) &(arquivo["Age"]<=24)]
+faixaEtaria3 = len(filtro3)
 
-# filtro3 = arquivoNumerico[(arquivoNumerico["Age"]> 21) &(arquivo["Age"]<=24)]
-# faixaEtaria3 = len(filtro3)
+# Agrupamento 4: de 25 ou mais anos
+filtro4 = arquivoNumerico[arquivoNumerico["Age"]>24]
+faixaEtaria4 = len(filtro4)
 
-# filtro4 = arquivoNumerico[arquivoNumerico["Age"]>24]
-# faixaEtaria4 = len(filtro4)
-
-# plt.pie([faixaEtaria1, faixaEtaria2, faixaEtaria3, faixaEtaria4], labels=["<17","18-21","22-24","25+"],autopct="%1.1f%%",startangle=90)
-# plt.title("Gráfico de Pizza - Idades")
-# plt.axis("equal")
-# plt.show()
+# Geração de Gráfico de Pizza
+plt.pie([faixaEtaria1, faixaEtaria2, faixaEtaria3, faixaEtaria4], labels=["<17","18-21","22-24","25+"],autopct="%1.1f%%",startangle=90)
+plt.title("Gráfico de Pizza - Idades")
+plt.axis("equal")
+plt.show()
