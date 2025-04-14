@@ -89,52 +89,12 @@ print("""
       """)
 """ Quarto processo geral: Visualização de gráficos gerados a partir das colunas abaixo """
 
-# # Gráfico de dispersão para “horas de sono” x “nota final”
-# plt.scatter(arquivoNumerico["Sleep_Hours_per_Night"], arquivoNumerico["Final_Score"])
-# plt.title("Gráfico de Dispersão - Horas de sono x Nota final")
-# plt.xlabel("Horas de Sono")
-# plt.ylabel("Nota Final")
-# plt.show()
-
-# # Gráfico de barras para – idade x média das notas intermediárias (midterm_Score)
-# plt.bar(arquivoNumerico["Age"], arquivoNumerico["Midterm_Score"])
-# plt.title("Gráfico de Barras - Idade x Média das Notas Intermediárias")
-# plt.xlabel("Idade")
-# plt.ylabel("Idade x Média das Notas Intermediárias")
-# plt.show()
-
-# # Gráfico de pizza para as idades (Agrupadas: até 17; 18 a 21; 21 a 24; 25 ou mais)
-
-# # Agrupamento 1: até 17 anos
-# filtro1 = arquivoNumerico[arquivoNumerico["Age"]<=17]
-# faixaEtaria1 = len(filtro1)
-
-# # Agrupamento 2: de 18 a 21 anos
-# filtro2 = arquivoNumerico[(arquivoNumerico["Age"]> 17) &(arquivo["Age"]<=21)]
-# faixaEtaria2 = len(filtro2)
-
-# # Agrupamento 3: de 21 a 24 anos
-# filtro3 = arquivoNumerico[(arquivoNumerico["Age"]> 21) &(arquivo["Age"]<=24)]
-# faixaEtaria3 = len(filtro3)
-
-# # Agrupamento 4: de 25 ou mais anos
-# filtro4 = arquivoNumerico[arquivoNumerico["Age"]>24]
-# faixaEtaria4 = len(filtro4)
-
-# # Geração de Gráfico de Pizza
-# plt.pie([faixaEtaria1, faixaEtaria2, faixaEtaria3, faixaEtaria4], labels=["<17","18-21","22-24","25+"],autopct="%1.1f%%",startangle=90)
-# plt.title("Gráfico de Pizza - Idades")
-# plt.axis("equal")
-# plt.show()
-
-# Código IA
-# Configurações gerais
 plt.rcParams['figure.autolayout'] = True  # Ajuste automático do layout
 plt.rcParams['axes.grid'] = True  # Grade habilitada por padrão
 plt.rcParams['grid.linestyle'] = '--'
 plt.rcParams['grid.alpha'] = 0.4
 
-# 1. Gráfico de Dispersão Melhorado (Horas de Sono x Nota Final)
+# 1. Gráfico de Dispersão (Horas de Sono x Nota Final)
 plt.figure(figsize=(10, 6))
 scatter = plt.scatter(
     arquivoNumerico["Sleep_Hours_per_Night"], 
@@ -153,18 +113,7 @@ plt.xlabel("Horas de Sono por Noite")
 plt.ylabel("Nota Final (pontos)")
 plt.grid(True)
 
-# # Linha de tendência (opcional)
-# z = np.polyfit(arquivoNumerico["Sleep_Hours_per_Night"], arquivoNumerico["Final_Score"], 1)
-# p = np.poly1d(z)
-# plt.plot(arquivoNumerico["Sleep_Hours_per_Night"], 
-#          p(arquivoNumerico["Sleep_Hours_per_Night"]), 
-#          "r--", 
-#          label='Tendência')
-
-# plt.legend()
-# plt.show()
-
-# 2. Gráfico de Barras Melhorado (Idade x Média de Notas)
+# 2. Gráfico de Barras (Idade x Média de Notas)
 # Agrupar dados primeiro
 dados_agrupados = arquivoNumerico.groupby('Age')['Midterm_Score'].mean().reset_index()
 
@@ -193,26 +142,48 @@ plt.xticks(rotation=45)  # Rotacionar labels se necessário
 plt.grid(axis='y')
 plt.show()
 
-# 3. Gráfico de Pizza Melhorado (Distribuição por Faixa Etária)
-faixas = ["<17 anos", "18-21 anos", "22-24 anos", "25+ anos"]
-valores = [faixaEtaria1, faixaEtaria2, faixaEtaria3, faixaEtaria4]
-cores = ['#ff7f0e', '#2ca02c', '#d62728', '#9467bd']  # Cores acessíveis
+plt.figure(figsize=(10, 8))
 
-plt.figure(figsize=(8, 8))
+# Definindo faixas etárias e contagens
+faixas = ["≤17 anos", "18-21 anos", "22-24 anos", "25+ anos"]
+valores = [
+    len(arquivoNumerico[arquivoNumerico["Age"] <= 17]),
+    len(arquivoNumerico[(arquivoNumerico["Age"] > 17) & (arquivoNumerico["Age"] <= 21)]),
+    len(arquivoNumerico[(arquivoNumerico["Age"] > 21) & (arquivoNumerico["Age"] <= 24)]),
+    len(arquivoNumerico[arquivoNumerico["Age"] > 24])
+]
+
+# Configurações visuais melhoradas
+cores = ['#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB']
+explode = (0.05, 0, 0, 0)  # Destaque para a primeira fatia
+
+# Criando o gráfico
 wedges, texts, autotexts = plt.pie(
     valores,
     labels=faixas,
-    autopct=lambda p: f'{p:.1f}%\n({int(p*sum(valores)/100)})',  # Porcentagem e valor absoluto
-    startangle=90,
+    autopct=lambda p: f'{p:.1f}%\n({int(p*sum(valores)/100)})',
+    startangle=140,
     colors=cores,
-    explode=(0.05, 0, 0, 0),  # Destaque para a primeira fatia
-    textprops={'fontsize': 10},
-    wedgeprops={'edgecolor': 'white', 'linewidth': 0.5}
+    explode=explode,
+    shadow=True,
+    textprops={'fontsize': 11, 'color': '#333333'},
+    wedgeprops={'edgecolor': 'white', 'linewidth': 1, 'linestyle': 'solid'}
 )
 
-# Melhorar a legenda
-plt.setp(autotexts, size=10, weight="bold")
-plt.setp(texts, size=10)
+# Melhorando a legenda
+plt.setp(autotexts, size=11, weight="bold", color='white')
+plt.setp(texts, size=11, weight="bold")
 
-plt.title("Distribuição dos Alunos por Faixa Etária\n", fontsize=12)
+# Adicionando título e ajustes finais
+plt.title("Distribuição dos Alunos por Faixa Etária\n", 
+          fontsize=14, pad=20, weight='bold')
+plt.subplots_adjust(top=0.85)  # Ajuste de espaço para o título
+
+# Adicionando legenda opcional
+plt.legend(wedges, faixas,
+          title="Faixas Etárias",
+          loc="center left",
+          bbox_to_anchor=(1, 0, 0.5, 1))
+
+plt.tight_layout()
 plt.show()
