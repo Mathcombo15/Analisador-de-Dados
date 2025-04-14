@@ -82,42 +82,137 @@ print(f"- Moda: {moda}")
 print(f"- Desvio padrão: {desvioPadrao}")
 
 print("\n*** [Gráficos] ***")
+print("""
+      SR. USUÁRIO, UM GRÁFICO ACABA DE SER GERADO EM UMA NOVA ABA NA BARRA DE TAREFAS DO SEU COMPUTADOR. 
+      AO FECHAR O GRÁFICO ATUAL, VOCÊ TERÁ ACESSO AO PRÓXIMO GRÁFICO LOGO EM SEGUIDA. 
+      NO TOTAL, SERÃO GERADOS 3 GRÁFICOS.
+      """)
 """ Quarto processo geral: Visualização de gráficos gerados a partir das colunas abaixo """
 
-# Gráfico de dispersão para “horas de sono” x “nota final”
-plt.scatter(arquivoNumerico["Sleep_Hours_per_Night"], arquivoNumerico["Final_Score"])
-plt.title("Gráfico de Dispersão - Horas de sono x Nota final")
-plt.xlabel("Horas de Sono")
-plt.ylabel("Nota Final")
+# # Gráfico de dispersão para “horas de sono” x “nota final”
+# plt.scatter(arquivoNumerico["Sleep_Hours_per_Night"], arquivoNumerico["Final_Score"])
+# plt.title("Gráfico de Dispersão - Horas de sono x Nota final")
+# plt.xlabel("Horas de Sono")
+# plt.ylabel("Nota Final")
+# plt.show()
+
+# # Gráfico de barras para – idade x média das notas intermediárias (midterm_Score)
+# plt.bar(arquivoNumerico["Age"], arquivoNumerico["Midterm_Score"])
+# plt.title("Gráfico de Barras - Idade x Média das Notas Intermediárias")
+# plt.xlabel("Idade")
+# plt.ylabel("Idade x Média das Notas Intermediárias")
+# plt.show()
+
+# # Gráfico de pizza para as idades (Agrupadas: até 17; 18 a 21; 21 a 24; 25 ou mais)
+
+# # Agrupamento 1: até 17 anos
+# filtro1 = arquivoNumerico[arquivoNumerico["Age"]<=17]
+# faixaEtaria1 = len(filtro1)
+
+# # Agrupamento 2: de 18 a 21 anos
+# filtro2 = arquivoNumerico[(arquivoNumerico["Age"]> 17) &(arquivo["Age"]<=21)]
+# faixaEtaria2 = len(filtro2)
+
+# # Agrupamento 3: de 21 a 24 anos
+# filtro3 = arquivoNumerico[(arquivoNumerico["Age"]> 21) &(arquivo["Age"]<=24)]
+# faixaEtaria3 = len(filtro3)
+
+# # Agrupamento 4: de 25 ou mais anos
+# filtro4 = arquivoNumerico[arquivoNumerico["Age"]>24]
+# faixaEtaria4 = len(filtro4)
+
+# # Geração de Gráfico de Pizza
+# plt.pie([faixaEtaria1, faixaEtaria2, faixaEtaria3, faixaEtaria4], labels=["<17","18-21","22-24","25+"],autopct="%1.1f%%",startangle=90)
+# plt.title("Gráfico de Pizza - Idades")
+# plt.axis("equal")
+# plt.show()
+
+# Código IA
+# Configurações gerais
+plt.rcParams['figure.autolayout'] = True  # Ajuste automático do layout
+plt.rcParams['axes.grid'] = True  # Grade habilitada por padrão
+plt.rcParams['grid.linestyle'] = '--'
+plt.rcParams['grid.alpha'] = 0.4
+
+# 1. Gráfico de Dispersão Melhorado (Horas de Sono x Nota Final)
+plt.figure(figsize=(10, 6))
+scatter = plt.scatter(
+    arquivoNumerico["Sleep_Hours_per_Night"], 
+    arquivoNumerico["Final_Score"],
+    c=arquivoNumerico["Age"],  # Cores baseadas na idade
+    cmap='viridis',
+    alpha=0.7,
+    edgecolors='w',
+    linewidth=0.5
+)
+
+# Elementos do gráfico
+plt.colorbar(scatter, label='Idade (anos)')
+plt.title("Relação entre Horas de Sono e Nota Final", pad=20)
+plt.xlabel("Horas de Sono por Noite")
+plt.ylabel("Nota Final (pontos)")
+plt.grid(True)
+
+# # Linha de tendência (opcional)
+# z = np.polyfit(arquivoNumerico["Sleep_Hours_per_Night"], arquivoNumerico["Final_Score"], 1)
+# p = np.poly1d(z)
+# plt.plot(arquivoNumerico["Sleep_Hours_per_Night"], 
+#          p(arquivoNumerico["Sleep_Hours_per_Night"]), 
+#          "r--", 
+#          label='Tendência')
+
+# plt.legend()
+# plt.show()
+
+# 2. Gráfico de Barras Melhorado (Idade x Média de Notas)
+# Agrupar dados primeiro
+dados_agrupados = arquivoNumerico.groupby('Age')['Midterm_Score'].mean().reset_index()
+
+plt.figure(figsize=(12, 6))
+bars = plt.bar(
+    dados_agrupados["Age"].astype(str),  # Idades como strings
+    dados_agrupados["Midterm_Score"],
+    color='#1f77b4',  # Azul padrão do matplotlib
+    edgecolor='black',
+    width=0.7
+)
+
+# Adicionar valores em cima das barras
+for bar in bars:
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2., height,
+             f'{height:.1f}',
+             ha='center', 
+             va='bottom',
+             fontsize=9)
+
+plt.title("Média das Notas Intermediárias por Idade", pad=20)
+plt.xlabel("Idade (anos)")
+plt.ylabel("Média das Notas")
+plt.xticks(rotation=45)  # Rotacionar labels se necessário
+plt.grid(axis='y')
 plt.show()
 
-# Gráfico de barras para – idade x média das notas intermediárias (midterm_Score)
-plt.bar(arquivoNumerico["Age"], arquivoNumerico["Midterm_Score"])
-plt.title("Gráfico de Barras - Idade x Média das Notas Intermediárias")
-plt.xlabel("Idade")
-plt.ylabel("Idade x Média das Notas Intermediárias")
-plt.show()
+# 3. Gráfico de Pizza Melhorado (Distribuição por Faixa Etária)
+faixas = ["<17 anos", "18-21 anos", "22-24 anos", "25+ anos"]
+valores = [faixaEtaria1, faixaEtaria2, faixaEtaria3, faixaEtaria4]
+cores = ['#ff7f0e', '#2ca02c', '#d62728', '#9467bd']  # Cores acessíveis
 
-# Gráfico de pizza para as idades (Agrupadas: até 17; 18 a 21; 21 a 24; 25 ou mais)
+plt.figure(figsize=(8, 8))
+wedges, texts, autotexts = plt.pie(
+    valores,
+    labels=faixas,
+    autopct=lambda p: f'{p:.1f}%\n({int(p*sum(valores)/100)})',  # Porcentagem e valor absoluto
+    startangle=90,
+    colors=cores,
+    explode=(0.05, 0, 0, 0),  # Destaque para a primeira fatia
+    textprops={'fontsize': 10},
+    wedgeprops={'edgecolor': 'white', 'linewidth': 0.5}
+)
 
-# Agrupamento 1: até 17 anos
-filtro1 = arquivoNumerico[arquivoNumerico["Age"]<=17]
-faixaEtaria1 = len(filtro1)
+# Melhorar a legenda
+plt.setp(autotexts, size=10, weight="bold")
+plt.setp(texts, size=10)
 
-# Agrupamento 2: de 18 a 21 anos
-filtro2 = arquivoNumerico[(arquivoNumerico["Age"]> 17) &(arquivo["Age"]<=21)]
-faixaEtaria2 = len(filtro2)
-
-# Agrupamento 3: de 21 a 24 anos
-filtro3 = arquivoNumerico[(arquivoNumerico["Age"]> 21) &(arquivo["Age"]<=24)]
-faixaEtaria3 = len(filtro3)
-
-# Agrupamento 4: de 25 ou mais anos
-filtro4 = arquivoNumerico[arquivoNumerico["Age"]>24]
-faixaEtaria4 = len(filtro4)
-
-# Geração de Gráfico de Pizza
-plt.pie([faixaEtaria1, faixaEtaria2, faixaEtaria3, faixaEtaria4], labels=["<17","18-21","22-24","25+"],autopct="%1.1f%%",startangle=90)
-plt.title("Gráfico de Pizza - Idades")
-plt.axis("equal")
+plt.title("Distribuição dos Alunos por Faixa Etária\n", fontsize=12)
 plt.show()
