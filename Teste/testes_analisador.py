@@ -5,10 +5,10 @@ print("\n---- ANALISADOR DE DADOS ----")
 print("\n*** [Carregando arquivo] ***")
 """ Primeiro Processo Geral: Carregar um arquivo CSV """
 
-# Carregar arquivo através do caminho do mesmo com tratamento de erro
+# Carregar arquivo através do caminho informado pelo usuário.
 while True:
     try:
-        caminhoArquivo = input("Escreva o caminho de um arquivo CSV para leitura: \n")
+        caminhoArquivo = input("\nEscreva o caminho de um arquivo CSV para leitura:")
         arquivo = pd.read_csv(caminhoArquivo)
         break
     except FileNotFoundError:
