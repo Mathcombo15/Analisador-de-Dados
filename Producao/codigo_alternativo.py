@@ -28,7 +28,7 @@ def carregar_dados():
                 print("Erro: O arquivo CSV está vazio.\n")
                 continue
                 
-            # Verifica colunas obrigatórias
+            # Verifica se as colunas necessárias existem
             colunas_necessarias = ['Gender', 'Parent_Education_Level']
             colunas_faltantes = [col for col in colunas_necessarias if col not in arquivo.columns]
             
@@ -88,7 +88,7 @@ def limpar_dados(arquivo):
         mediana = novo_arquivo['Attendance (%)'].median()
         novo_arquivo['Attendance (%)'].fillna(mediana, inplace=True)
         
-        # 3º Passo: Resultados
+        # 3º Passo: Exibição estatística
         print(f"\n- Mediana da coluna Attendance: {mediana} %.")
         print("\n- Valores nulos preenchidos com a mediana:")
         print(novo_arquivo['Attendance (%)'])
@@ -115,7 +115,7 @@ def consultar_dados(arquivo):
     for i, coluna in enumerate(lista_colunas):
         print(f"{i+1} - {coluna}")
     
-    coluna_escolhida = input("\nEscolha a coluna que deseja calcular (escreva o número): ")
+    coluna_escolhida = input("\nEscolha a coluna que deseja calcular (escreva um número): ")
     coluna_calculo = lista_colunas[int(coluna_escolhida)-1]
     
     serie = pd.Series(arquivo_numerico[coluna_calculo].tolist())
@@ -131,9 +131,9 @@ def gerar_graficos(arquivo_numerico):
     """Gera os gráficos de análise dos dados."""
     print("\n*** [Gráficos] ***")
     print("""
-    SR. USUÁRIO, UM GRÁFICO ACABA DE SER GERADO EM UMA NOVA ABA. 
-    AO FECHAR O GRÁFICO ATUAL, VOCÊ TERÁ ACESSO AO PRÓXIMO.
-    NO TOTAL, SERÃO GERADOS 3 GRÁFICOS.
+    SR. USUÁRIO, UM GRÁFICO ACABA DE SER GERADO EM UMA NOVA ABA.
+    NA BARRA DE TAREFAS DO SEU COMPUTADOR. AO FECHAR O GRÁFICO ATUAL, 
+    VOCÊ TERÁ ACESSO AO PRÓXIMO. NO TOTAL, SERÃO GERADOS 3 GRÁFICOS.
     """)
     
     plt.rcParams['figure.autolayout'] = True
@@ -141,7 +141,7 @@ def gerar_graficos(arquivo_numerico):
     plt.rcParams['grid.linestyle'] = '--'
     plt.rcParams['grid.alpha'] = 0.4
 
-    # Gráfico 1: Dispersão (Horas de Sono x Nota Final) - Tamanho: 10x6
+    # Gráfico 1: Dispersão (Horas de Sono x Nota Final)
     plt.figure(figsize=(10, 6))
     scatter = plt.scatter(
         arquivo_numerico["Sleep_Hours_per_Night"],
@@ -156,7 +156,7 @@ def gerar_graficos(arquivo_numerico):
     plt.ylabel("Nota Final (pontos)")
     plt.show()
 
-    # Gráfico 2: Barras (Idade x Média de Notas) - Tamanho: 12x6
+    # Gráfico 2: Barras (Idade x Média de Notas)
     dados_agrupados = arquivo_numerico.groupby('Age')['Midterm_Score'].mean().reset_index()
     plt.figure(figsize=(12, 6))
     bars = plt.bar(
@@ -176,7 +176,7 @@ def gerar_graficos(arquivo_numerico):
     plt.xticks(rotation=45)
     plt.show()
 
-    # Gráfico 3: Pizza (Distribuição por Faixa Etária) - Tamanho ajustado para 12x6
+    # Gráfico 3: Pizza (Distribuição por Faixa Etária) 
     faixas = ["≤17 anos", "18-21 anos", "22-24 anos", "25+ anos"]
     valores = [
         len(arquivo_numerico[arquivo_numerico["Age"] <= 17]),
@@ -185,7 +185,7 @@ def gerar_graficos(arquivo_numerico):
         len(arquivo_numerico[arquivo_numerico["Age"] > 24])
     ]
     
-    plt.figure(figsize=(12, 6))  # Tamanho igual ao gráfico de barras
+    plt.figure(figsize=(12, 6))
     plt.pie(
         valores,
         labels=faixas,
@@ -197,10 +197,10 @@ def gerar_graficos(arquivo_numerico):
         wedgeprops={'linewidth': 0.5, 'edgecolor': 'white'}
     )
     
-    # Ajuste de layout para melhor visualização no novo tamanho
+    
     plt.title("Distribuição dos Alunos por Faixa Etária", pad=20)
     plt.tight_layout()
-    plt.show()
+    plt.show() 
 
 
 def main():
@@ -209,7 +209,6 @@ def main():
     dados_limpos = limpar_dados(dados_brutos)
     dados_numericos = consultar_dados(dados_limpos)
     gerar_graficos(dados_numericos)
-
 
 if __name__ == "__main__":
     main()
