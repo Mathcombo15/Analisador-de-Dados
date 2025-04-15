@@ -3,28 +3,64 @@ import matplotlib.pyplot as plt
 
 
 def carregar_dados():
-    """Carrega e analisa os dados iniciais do arquivo CSV."""
+    """Carrega e analisa os dados iniciais do arquivo CSV com tratamento de erros."""
     print("\n---- ANALISADOR DE DADOS ----")
     print("\n*** [Carregando arquivo] ***")
     
-    caminho_arquivo = input("Escreva o caminho do arquivo para leitura: \n")
-    arquivo = pd.read_csv(caminho_arquivo)
-    
-    # Análise inicial
-    num_dados = len(arquivo)
-    filtro_masculino = arquivo[arquivo["Gender"] == "Male"]
-    filtro_feminino = arquivo[arquivo["Gender"] == "Female"]
-    educacao_pais_vazio = len(arquivo[arquivo["Parent_Education_Level"].isna()])
-    
-    print("\nRESUMO ESTATÍSTICO DOS DADOS: ")
-    print(f"- Registros carregados: {num_dados}.")
-    print(f"- Quantidade de homens: {len(filtro_masculino)}.")
-    print(f"- Quantidade de mulheres: {len(filtro_feminino)}.")
-    print(f"- Campos 'Nível de educação dos pais' vazios: {educacao_pais_vazio}.")
-    
-    return arquivo
-
-
+    while True:
+        caminho_arquivo = input("Escreva o caminho de um arquivo CSV para leitura: \n").strip()
+        
+        # Validações iniciais
+        if not caminho_arquivo:
+            print("Erro: O caminho do arquivo não pode estar vazio.\n")
+            continue
+            
+        if not caminho_arquivo.lower().endswith('.csv'):
+            print("Erro: O arquivo deve ter extensão .csv\n")
+            continue
+            
+        try:
+            # Tentativa de carregar o arquivo
+            arquivo = pd.read_csv(caminho_arquivo)
+            
+            # Verifica se o arquivo não está vazio
+            if len(arquivo) == 0:
+                print("Erro: O arquivo CSV está vazio.\n")
+                continue
+                
+            # Verifica colunas obrigatórias
+            colunas_necessarias = ['Gender', 'Parent_Education_Level']
+            colunas_faltantes = [col for col in colunas_necessarias if col not in arquivo.columns]
+            
+            if colunas_faltantes:
+                print(f"Erro: O arquivo não contém as colunas obrigatórias: {', '.join(colunas_faltantes)}\n")
+                continue
+            
+            # Análise inicial
+            num_dados = len(arquivo)
+            filtro_masculino = arquivo[arquivo["Gender"] == "Male"]
+            filtro_feminino = arquivo[arquivo["Gender"] == "Female"]
+            educacao_pais_vazio = len(arquivo[arquivo["Parent_Education_Level"].isna()])
+            
+            print("\nRESUMO ESTATÍSTICO DOS DADOS: ")
+            print(f"- Registros carregados: {num_dados}.")
+            print(f"- Quantidade de homens: {len(filtro_masculino)}.")
+            print(f"- Quantidade de mulheres: {len(filtro_feminino)}.")
+            print(f"- Registros com campo 'Nível de educação dos pais' vazios: {educacao_pais_vazio}.")
+            
+            return arquivo
+            
+        except FileNotFoundError:
+            print(f"Erro: Arquivo não encontrado no caminho: {caminho_arquivo}\n")
+        except pd.errors.EmptyDataError:
+            print("Erro: O arquivo está vazio.\n")
+        except pd.errors.ParserError:
+            print("Erro: O arquivo não está no formato CSV válido.\n")
+        except UnicodeDecodeError:
+            print("Erro: Problema de codificação no arquivo. Use UTF-8.\n")
+        except Exception as e:
+            print(f"Erro inesperado: {str(e)}\n")
+            
 def limpar_dados(arquivo):
     """Realiza a limpeza e tratamento dos dados."""
     print("\n*** [Limpeza de Dados] ***")
@@ -43,7 +79,6 @@ def limpar_dados(arquivo):
     print(f"\nSomatório da coluna Attendance: {novo_arquivo['Attendance (%)'].sum()}")
     
     return novo_arquivo
-
 
 def consultar_dados(arquivo):
     """Permite ao usuário consultar estatísticas das colunas numéricas."""

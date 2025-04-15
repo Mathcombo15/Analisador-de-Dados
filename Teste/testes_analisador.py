@@ -8,7 +8,7 @@ print("\n*** [Carregando arquivo] ***")
 # Carregar arquivo através do caminho do mesmo com tratamento de erro
 while True:
     try:
-        caminhoArquivo = input("Escreva o caminho do arquivo para leitura: \n")
+        caminhoArquivo = input("Escreva o caminho de um arquivo CSV para leitura: \n")
         arquivo = pd.read_csv(caminhoArquivo)
         break
     except FileNotFoundError:
