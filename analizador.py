@@ -7,7 +7,7 @@ def validar_arquivo_csv():
     print("\n*** [Carregando arquivo] ***")
     
     while True:
-        caminho_arquivo = input("Escreva qual é o caminho do arquivo: \n").strip()
+        caminho_arquivo = input("Escreva qual é o caminho de um arquivo CSV para leitura: \n").strip()
         
         if not caminho_arquivo:
             print("Erro: O caminho do arquivo não pode estar vazio.")
@@ -56,10 +56,10 @@ def analisar_dados(arquivo):
     
         # Exibição de resultados
         print("\nRESUMO ESTATÍSTICO DOS DADOS: ")
-        print(f"- Registros carregados: {len(arquivo)}")
-        print(f"- Quantidade de homens: {quantidade_homens}")
-        print(f"- Quantidade de mulheres: {quantidade_mulheres}")
-        print(f"- Registros com campo 'Nível de educação dos pais' vazios: {educacao_pais}")
+        print(f"- Registros carregados: {len(arquivo)}.")
+        print(f"- Quantidade de homens: {quantidade_homens}.")
+        print(f"- Quantidade de mulheres: {quantidade_mulheres}.")
+        print(f"- Registros com campo 'Nível de educação dos pais' vazios: {educacao_pais}.")
         
         return True
         
@@ -84,7 +84,6 @@ def calcular_estatisticas(arquivo):
             
         lista_colunas = arquivo_numerico.columns.tolist()
         
-        print("\nEscolha a coluna que deseja calcular (escreva o número): ")
         for i, coluna in enumerate(lista_colunas, 1):
             print(f"{i} - {coluna}")
             
@@ -98,13 +97,11 @@ def calcular_estatisticas(arquivo):
                 coluna_calculo = lista_colunas[indice]
                 
                 serie = arquivo_numerico[coluna_calculo]
-                print(f"\nEstatísticas para {coluna_calculo}:")
-                print(f"Média: {serie.mean():.2f}")
-                print(f"Mediana: {serie.median():.2f}")
-                print(f"Moda: {serie.mode().iloc[0]:.2f}")
-                print(f"Desvio padrão: {serie.std():.2f}")
-                print(f"Valor mínimo: {serie.min():.2f}")
-                print(f"Valor máximo: {serie.max():.2f}")
+                print(f"\nEstatísticas para coluna '{coluna_calculo}':")
+                print(f"- Média: {serie.mean():.2f}")
+                print(f"- Mediana: {serie.median():.2f}")
+                print(f"- Moda: {serie.mode().iloc[0]:.2f}")
+                print(f"- Desvio padrão: {serie.std():.2f}")
                 
             except (ValueError, IndexError):
                 print("Entrada inválida. Digite um número correspondente à coluna ou 'sair'.")
@@ -199,7 +196,6 @@ def gerar_graficos(arquivo):
         
 def main():
     """Função principal que orquestra a execução do programa."""
-    print("=== Análise de Dados Educacionais ===")
     
     # Carrega o arquivo
     arquivo = validar_arquivo_csv()
