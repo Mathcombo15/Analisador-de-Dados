@@ -1,13 +1,16 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
 def validar_arquivo_csv():
     """Carrega e analisa os dados iniciais do arquivo CSV com tratamento de erros."""
     print("\n---- ANALISADOR DE DADOS ----")
     print("\n*** [Carregando arquivo] ***")
     
     while True:
-        caminho_arquivo = input("Escreva qual é o caminho de um arquivo CSV para leitura: \n").strip()
+        caminho_arquivo = input(
+            "Escreva qual é o caminho de um arquivo CSV para leitura: \n"
+        ).strip()
         
         if not caminho_arquivo:
             print("Erro: O caminho do arquivo não pode estar vazio.")
@@ -24,16 +27,20 @@ def validar_arquivo_csv():
         except pd.errors.ParserError:
             print("Erro: O arquivo não está no formato CSV válido.")
         except UnicodeDecodeError:
-            print("Erro: Problema de codificação no arquivo. Tente um arquivo com codificação diferente.")
+            print("Erro: Problema de codificação no arquivo. Tente um arquivo com "
+                  "codificação diferente.")
         except Exception as e:
             print(f"Erro inesperado: {str(e)}")
+
 
 def analisar_dados(arquivo):
     """Realiza análise dos dados com tratamento de erros."""
     try:
         # Verificação de colunas necessárias
-        colunas_necessarias = ['Gender', 'Parent_Education_Level', 'Age', 
-                              'Sleep_Hours_per_Night', 'Final_Score', 'Midterm_Score']
+        colunas_necessarias = [
+            'Gender', 'Parent_Education_Level', 'Age',
+            'Sleep_Hours_per_Night', 'Final_Score', 'Midterm_Score'
+        ]
         
         for coluna in colunas_necessarias:
             if coluna not in arquivo.columns:
@@ -52,20 +59,23 @@ def analisar_dados(arquivo):
             educacao_pais = len(filtro_pais)
             arquivo_sem_nulos = arquivo.dropna(subset=["Parent_Education_Level"])
         except KeyError:
-            print("\nAVISO: Coluna 'Parent_Education_Level' não encontrada. Pulando esta etapa de limpeza.")
+            print("\nAVISO: Coluna 'Parent_Education_Level' não encontrada. "
+                  "Pulando esta etapa de limpeza.")
     
         # Exibição de resultados
         print("\nRESUMO ESTATÍSTICO DOS DADOS: ")
         print(f"- Registros carregados: {len(arquivo)}.")
         print(f"- Quantidade de homens: {quantidade_homens}.")
         print(f"- Quantidade de mulheres: {quantidade_mulheres}.")
-        print(f"- Registros com campo 'Nível de educação dos pais' vazios: {educacao_pais}.")
+        print(f"- Registros com campo 'Nível de educação dos pais' vazios: "
+              f"{educacao_pais}.")
         
         return True
         
     except Exception as e:
         print(f"\nErro na análise de dados: {str(e)}")
         return False
+
 
 def calcular_estatisticas(arquivo):
     """Permite ao usuário consultar estatísticas das colunas numéricas."""
@@ -89,7 +99,9 @@ def calcular_estatisticas(arquivo):
             
         while True:
             try:
-                escolha = input("\nEscolha a coluna que deseja calcular (escreva o número): ")
+                escolha = input(
+                    "\nEscolha a coluna que deseja calcular (escreva o número): "
+                )
                 if escolha.lower() == 'sair':
                     break
                     
@@ -104,12 +116,14 @@ def calcular_estatisticas(arquivo):
                 print(f"- Desvio padrão: {serie.std():.2f}")
                 
             except (ValueError, IndexError):
-                print("Entrada inválida. Digite um número correspondente à coluna ou 'sair'.")
+                print("Entrada inválida. Digite um número correspondente à coluna "
+                      "ou 'sair'.")
             except Exception as e:
                 print(f"Erro ao calcular estatísticas: {str(e)}")
 
     except Exception as e:
         print(f"Erro na seleção de colunas numéricas: {str(e)}")
+
 
 def gerar_graficos(arquivo):
     """Gera os gráficos de análise dos dados."""
@@ -129,7 +143,9 @@ def gerar_graficos(arquivo):
     arquivo_numerico = arquivo.select_dtypes(include=["number"])
     
     # Verifica se as colunas necessárias existem
-    colunas_graficos = ['Sleep_Hours_per_Night', 'Final_Score', 'Age', 'Midterm_Score']
+    colunas_graficos = [
+        'Sleep_Hours_per_Night', 'Final_Score', 'Age', 'Midterm_Score'
+    ]
     for coluna in colunas_graficos:
         if coluna not in arquivo_numerico.columns:
             print(f"Erro: Coluna '{coluna}' não encontrada para gerar gráficos.")
@@ -174,8 +190,10 @@ def gerar_graficos(arquivo):
     faixas = ["≤17 anos", "18-21 anos", "22-24 anos", "25+ anos"]
     valores = [
         len(arquivo_numerico[arquivo_numerico["Age"] <= 17]),
-        len(arquivo_numerico[(arquivo_numerico["Age"] > 17) & (arquivo_numerico["Age"] <= 21)]),
-        len(arquivo_numerico[(arquivo_numerico["Age"] > 21) & (arquivo_numerico["Age"] <= 24)]),
+        len(arquivo_numerico[(arquivo_numerico["Age"] > 17) & 
+                           (arquivo_numerico["Age"] <= 21)]),
+        len(arquivo_numerico[(arquivo_numerico["Age"] > 21) & 
+                           (arquivo_numerico["Age"] <= 24)]),
         len(arquivo_numerico[arquivo_numerico["Age"] > 24])
     ]
     
@@ -194,6 +212,7 @@ def gerar_graficos(arquivo):
     plt.tight_layout()
     plt.show()
         
+
 def main():
     """Função principal que orquestra a execução do programa."""
     
@@ -225,6 +244,7 @@ def main():
             break
         else:
             print("Opção inválida. Tente novamente.")
+
 
 if __name__ == "__main__":
     main()
